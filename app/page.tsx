@@ -3,14 +3,66 @@
 import { useState } from "react"
 import { StoryInput } from "@/components/story-input"
 import { StoryOutput } from "@/components/story-output"
+import { StoryOptions } from "@/components/story-options"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Sparkles } from "lucide-react"
+
+interface StoryOptionsData {
+  genres: string[]
+  tones: string[]
+  lengths: string[]
+  characters: string[]
+  settings: string[]
+}
+
+interface SelectedParams {
+  genre?: string
+  tone?: string
+  length?: string
+  characters?: string
+  setting?: string
+}
 
 export default function Home() {
   const [story, setStory] = useState<string>("")
   const [isGenerating, setIsGenerating] = useState(false)
+  const [currentPrompt, setCurrentPrompt] = useState<string>("")
+  const [options, setOptions] = useState<StoryOptionsData | null>(null)
+  const [isLoadingOptions, setIsLoadingOptions] = useState(false)
 
-  const handleGenerateStory = async (prompt: string) => {
+  const handleGetOptions = async (prompt: string) => {
+    setIsLoadingOptions(true)
+    setOptions(null)
+    setStory("")
+    setCurrentPrompt(prompt)
+
+    try {
+      const response = await fetch("/api/story", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          prompt, 
+          step: "get-options" 
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to get story options")
+      }
+
+      const data = await response.json()
+      setOptions(data.options)
+    } catch (error) {
+      console.error("[v0] Error getting options:", error)
+      setStory("Sorry, there was an error getting story options. Please try again.")
+    } finally {
+      setIsLoadingOptions(false)
+    }
+  }
+
+  const handleGenerateStory = async (selectedParams: SelectedParams) => {
     setIsGenerating(true)
     setStory("")
 
@@ -20,7 +72,11 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ 
+          prompt: currentPrompt,
+          step: "generate-story",
+          selectedParams 
+        }),
       })
 
       if (!response.ok) {
@@ -29,12 +85,19 @@ export default function Home() {
 
       const data = await response.json()
       setStory(data.story)
+      setOptions(null) // Clear options after generating story
     } catch (error) {
       console.error("[v0] Error generating story:", error)
       setStory("Sorry, there was an error generating your story. Please try again.")
     } finally {
       setIsGenerating(false)
     }
+  }
+
+  const handleReset = () => {
+    setOptions(null)
+    setStory("")
+    setCurrentPrompt("")
   }
 
   return (
@@ -56,13 +119,36 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Input Section */}
-        <div className="mb-8">
-          <StoryInput onGenerate={handleGenerateStory} isGenerating={isGenerating} />
-        </div>
+        {/* Input Section - Only show if no options are displayed */}
+        {!options && (
+          <div className="mb-8">
+            <StoryInput 
+              onGenerate={handleGetOptions} 
+              isGenerating={isLoadingOptions} 
+            />
+          </div>
+        )}
+
+        {/* Options Section */}
+        {options && !story && !isGenerating && (
+          <div className="mb-8">
+            <StoryOptions 
+              options={options}
+              prompt={currentPrompt}
+              onGenerate={handleGenerateStory}
+              onBack={handleReset}
+            />
+          </div>
+        )}
 
         {/* Output Section */}
-        {(story || isGenerating) && <StoryOutput story={story} isGenerating={isGenerating} />}
+        {(story || isGenerating) && (
+          <StoryOutput 
+            story={story} 
+            isGenerating={isGenerating}
+            onReset={handleReset}
+          />
+        )}
       </main>
 
       {/* Footer */}
