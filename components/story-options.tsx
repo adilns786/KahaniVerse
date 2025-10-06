@@ -71,8 +71,8 @@ export function StoryOptions({ options, prompt, onGenerate, onBack }: StoryOptio
             onValueChange={(value: string) => handleSelectOption("genre", value)}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {options.genres.map((genre) => (
-                <div key={genre} className="flex items-center space-x-2">
+              {options.genres.map((genre,index) => (
+                <div key={`genre-${index}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={genre} id={`genre-${genre}`} />
                   <Label htmlFor={`genre-${genre}`} className="cursor-pointer font-normal">
                     {genre}
@@ -91,8 +91,8 @@ export function StoryOptions({ options, prompt, onGenerate, onBack }: StoryOptio
             onValueChange={(value: string) => handleSelectOption("tone", value)}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {options.tones.map((tone) => (
-                <div key={tone} className="flex items-center space-x-2">
+              {options.tones.map((tone,index) => (
+                <div key={`tone-${index}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={tone} id={`tone-${tone}`} />
                   <Label htmlFor={`tone-${tone}`} className="cursor-pointer font-normal">
                     {tone}
@@ -111,8 +111,8 @@ export function StoryOptions({ options, prompt, onGenerate, onBack }: StoryOptio
             onValueChange={(value: string) => handleSelectOption("length", value)}
           >
             <div className="grid grid-cols-3 gap-3">
-              {options.lengths.map((length) => (
-                <div key={length} className="flex items-center space-x-2">
+              {options.lengths.map((length,index) => (
+                <div key={`genre-${index}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={length} id={`length-${length}`} />
                   <Label htmlFor={`length-${length}`} className="cursor-pointer font-normal capitalize">
                     {length}
@@ -131,8 +131,8 @@ export function StoryOptions({ options, prompt, onGenerate, onBack }: StoryOptio
             onValueChange={(value: string) => handleSelectOption("characters", value)}
           >
             <div className="grid grid-cols-1 gap-3">
-              {options.characters.map((character) => (
-                <div key={character} className="flex items-center space-x-2">
+              {options.characters.map((character,index) => (
+                <div key={`genre-${index}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={character} id={`char-${character}`} />
                   <Label htmlFor={`char-${character}`} className="cursor-pointer font-normal">
                     {character}
@@ -151,8 +151,8 @@ export function StoryOptions({ options, prompt, onGenerate, onBack }: StoryOptio
             onValueChange={(value: string) => handleSelectOption("setting", value)}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {options.settings.map((setting) => (
-                <div key={setting} className="flex items-center space-x-2">
+              {options.settings.map((setting,index) => (
+                <div key={`genre-${index}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={setting} id={`setting-${setting}`} />
                   <Label htmlFor={`setting-${setting}`} className="cursor-pointer font-normal">
                     {setting}
