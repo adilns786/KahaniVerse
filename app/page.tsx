@@ -107,7 +107,7 @@ export default function Home() {
       </div>
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
-        {/* Header */}
+        {/* Header ...*/}
         <div className="text-center mb-12 animate-fade-in-up">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="w-10 h-10 text-primary" />
